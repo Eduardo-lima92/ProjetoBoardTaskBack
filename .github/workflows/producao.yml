@@ -14,7 +14,7 @@ on:
 jobs:
   job1:
     name: CI - Build e criação do artefato
-    runs-on: ubuntu latest
+    runs-on: ubuntu-latest
     steps:
       - name: Pegar codigo  do repositório
         uses: actions/checkout@v3
