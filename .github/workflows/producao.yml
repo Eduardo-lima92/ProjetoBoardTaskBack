@@ -1,4 +1,4 @@
-nome: Pipeline de produção
+name: Pipeline de produção
 env:
   NODE_ENV: production
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -46,7 +46,7 @@ jobs:
     needs: job1
     runs-on: ubuntu-latest
     steps:
-      - name: Baixando artefatos do codigo buildado
+      - name: Baixando artefato do codigo buildado
         uses: actions/download-artefact@v3
         with:
           name: artefato
