@@ -57,4 +57,24 @@ router.post('/criar', authUser, conectarBancoDados , async function(req, res,) {
     });
 
 
+    router.get('/obter/usuario', authUser, conectarBancoDados , async function(req, res,) {
+      try{
+        // #swagger.tags = ['Tarefa']
+        // #swagger.description = "Endpoint para obter todas as tarefas do usuario logado"
+        const usuarioLogado = req.usuarioJwt.id;
+        const respostaBD =  await EsquemaTarefa.find({usuarioCriador: usuarioLogado});
+    
+        res.status(200).json({
+          status: "OK",
+          statusMensagem: "Tarefa listadas na resposta com sucesso.",
+          resposta: respostaBD
+        })
+      }catch (error) {
+          return tratarErrosEsperados(res, error);
+        }
+        
+    
+      });
+
+
 module.exports = router;
