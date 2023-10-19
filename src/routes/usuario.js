@@ -4,6 +4,8 @@ const tratarErrosEsperados = require('../../functions/TratarErrosEsperados');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const EsquemaUsuario = require('../models/usuario');
+const jwt = require('jsonwebtoken');
+
 
 /* GET users listing. */
 router.post('/criar', conectarBancoDados , async function(req, res,) {
@@ -25,6 +27,39 @@ router.post('/criar', conectarBancoDados , async function(req, res,) {
     }
     return tratarErrosEsperados(res, error);
 
+  }
+});
+
+
+
+router.post('/logar', conectarBancoDados , async function(req, res,) {
+  try{
+    // #swagger.tags = ['Usuario']
+    let {email, senha} = req.body;
+
+    let respostaBD = await EsquemaUsuario.findOne({ email }).select('+senha');
+    if (respostaBD) {
+
+      let senhacorreta = await bcrypt.compare(senha, respostaBD.senha);
+      if (senhacorreta){
+
+        let token = jwt.sign({ id: respostaBD._id }, process.env.JWT_SECRET, {expiresIn: '1d' })
+
+
+        res.header('x-auth-token', token);
+        res.status(200).json({
+          status:"OK",
+          statusMensagem: "Usuário autenticado com sucesso.",
+          resposta: {"x-auth-token": token } 
+        });
+      } else {
+        throw new Error("Email ou senha incorretas");
+      }
+    } else {
+      throw new Error("Email ou senha incorretas");
+    }
+  } catch (err) {
+    return tratarErrosEsperados(res, err);
   }
 });
 
